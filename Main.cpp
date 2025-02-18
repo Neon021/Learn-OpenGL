@@ -30,10 +30,16 @@ int main() {
 
 	int value = glfwWindowShouldClose(window);
 	while (value == GLFW_FALSE) {
+		//input
 		process_input(window);
+
+		//render
+		glClearColor(0.5f, 0.3f, 0.7f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		//check and call events swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
 		value = glfwWindowShouldClose(window);
 	}
 
