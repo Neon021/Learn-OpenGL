@@ -27,14 +27,14 @@ const char* fragmentShaderSource = "#version 330 core\n"
 
 int main() {
 
-	//Init and configure glfw
+#pragma region Init and configure glfw
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#pragma endregion
 
-
-	//glfw window create
+#pragma region glfw window create
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Learn OpenGL", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -44,17 +44,16 @@ int main() {
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+#pragma endregion
 
-
-	//Load OpenGL funcitons
+#pragma region Load OpenGL funcitons
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialze GLAD" << std::endl;
 		return -1;
 	}
+#pragma endregion
 
-
-	//build and compile vertex and fragment shaders
-
+#pragma region build and compile vertex and fragment shaders
 	//vertex shader
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -99,15 +98,23 @@ int main() {
 	//delete shaders after done
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+#pragma endregion
 
-
-
-	//Set-up vertex buffer and attributes
-	float vertices[] = {
-	-0.5f, -0.5f, 0.0f, // left  
-	 0.5f, -0.5f, 0.0f, // right 
-	 0.0f,  0.5f, 0.0f  // top   
+#pragma region Set-up vertex buffer and attributes
+	float firstTriangleVertices[] = {
+		//firstTriangleVertices
+	   -0.5f, -0.5f, 0.0f, // left  
+		0.5f, -0.5f, 0.0f, // right 
+		0.0f,  0.5f, 0.0f,  // top
 	};
+
+	float secondTriangleVertices[] = {
+		//secondTriangleVertices
+		0.5f, 0.5f, 0.0f, // left  
+		-0.5f, 0.5f, 0.0f, // right 
+		 0.0f,  -0.5f, 0.0f  // top   
+	};
+
 
 	//generate buffers and vertex array
 	unsigned int VBO, VAO;
@@ -117,15 +124,16 @@ int main() {
 	glBindVertexArray(VAO);
 	//then bind and set vertex buffer(s)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), /*(const void*)*/vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(firstTriangleVertices), firstTriangleVertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(secondTriangleVertices), secondTriangleVertices, GL_STATIC_DRAW);
 
 	//and then configure vertex attributes(s).
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (const void*)sizeof(firstTriangleVertices));
 	glEnableVertexAttribArray(0);
+#pragma endregion
 
-
-
-	//render loop
+#pragma region render loop
 	int value = glfwWindowShouldClose(window);
 	while (value == GLFW_FALSE) {
 		//input
@@ -147,6 +155,8 @@ int main() {
 		glfwPollEvents();
 		value = glfwWindowShouldClose(window);
 	}
+#pragma endregion
+
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shaderProgram);
