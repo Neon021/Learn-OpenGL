@@ -101,28 +101,39 @@ int main() {
 #pragma endregion
 
 #pragma region Set-up vertex buffer and attributes
-	float vertices[] = {
+	float firstTriangleVertices[] = {
 		//firstTriangleVertices
 	   -0.5f, -0.5f, 0.0f, // left  
 		0.5f, -0.5f, 0.0f, // right 
 		0.0f,  0.5f, 0.0f,  // top
+	};
+
+	float secondTriangleVertices[] = {
 		//secondTriangleVertices
 		0.5f, 0.5f, 0.0f, // left  
 		-0.5f, 0.5f, 0.0f, // right 
 		0.0f,  -0.5f, 0.0f  // top   
 	};
 
-
 	//generate buffers and vertex array
-	unsigned int VBO, VAO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	//bind VAO first
-	glBindVertexArray(VAO);
-	//then bind and set vertex buffer(s)
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	unsigned int VBOs[2], VAOs[2];
+	glGenVertexArrays(2, VAOs);
+	glGenBuffers(2, VBOs);
+	
+	//bind first triangle VAO
+	glBindVertexArray(VAOs[0]);
+	//then bind and set vertex buffer(s) of first triangle
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(firstTriangleVertices), firstTriangleVertices, GL_STATIC_DRAW);
+	//and then configure vertex attributes(s).
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glEnableVertexAttribArray(0);
 
+	//bind first triangle VAO
+	glBindVertexArray(VAOs[1]);
+	//then bind and set vertex buffer(s) of first triangle
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(secondTriangleVertices), secondTriangleVertices, GL_STATIC_DRAW);
 	//and then configure vertex attributes(s).
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 	glEnableVertexAttribArray(0);
@@ -140,8 +151,12 @@ int main() {
 
 		// draw our first triangle
 		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(VAOs[0]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// draw our second triangle
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAOs[1]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		// glBindVertexArray(0); // no need to unbind it every time 
 
 
@@ -152,8 +167,8 @@ int main() {
 	}
 #pragma endregion
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, VAOs);
+	glDeleteBuffers(1, VBOs);
 	glDeleteProgram(shaderProgram);
 
 	glfwTerminate();
