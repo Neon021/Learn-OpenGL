@@ -19,18 +19,26 @@ const char* vertexShaderSource = "#version 330 core\n"
 "}\0";
 
 const char* orangeFragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-	"}\n\0";
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"}\n\0";
 
 const char* yellowFragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
-	"}\n\0";
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
+"}\n\0";
+
+const char* changingColorShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"uniform vec4 ourColor; // we set this variable in the OpenGL code.\n"
+"void main()\n"
+"{\n"
+"	FragColor = ourColor;\n"
+"}\n";
 
 int main() {
 
@@ -97,10 +105,22 @@ int main() {
 	glAttachShader(yellowShaderProgram, yellowFragmentShader);
 	glLinkProgram(yellowShaderProgram);
 
+	//change color shader
+	unsigned int changeColorShader;
+	changeColorShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(changeColorShader, 1, &changingColorShaderSource, NULL);
+	glCompileShader(changeColorShader);
+	//link
+	unsigned int changeColorShaderProgram = glCreateProgram();
+	glAttachShader(changeColorShaderProgram, vertexShader);
+	glAttachShader(changeColorShaderProgram, changeColorShader);
+	glLinkProgram(changeColorShaderProgram);
+
 	//delete shaders after done
 	glDeleteShader(vertexShader);
 	glDeleteShader(orangeFragmentShader);
 	glDeleteShader(yellowFragmentShader);
+	glDeleteShader(changeColorShader);
 #pragma endregion
 
 #pragma region Set-up vertex buffer and attributes
@@ -157,10 +177,18 @@ int main() {
 		glBindVertexArray(VAOs[0]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		// draw our second triangle
-		glUseProgram(yellowShaderProgram);
+		//glUseProgram(yellowShaderProgram);
+		//glBindVertexArray(VAOs[1]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glUseProgram(changeColorShaderProgram);
 		glBindVertexArray(VAOs[1]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-		// glBindVertexArray(0); // no need to unbind it every time 
+		float timeValue = glfwGetTime();
+		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+		int vertexColorLocation = glGetUniformLocation(changeColorShaderProgram, "ourColor");
+		glUseProgram(changeColorShaderProgram);
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 
 		//check and call events swap buffers
