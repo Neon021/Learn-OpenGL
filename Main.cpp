@@ -40,7 +40,7 @@ int main() {
 #pragma endregion
 
 #pragma region build and compile vertex and fragment shaders
-Shader ourShader("vShader.vs", "fShader.fs");
+	Shader ourShader("vShader.vs", "fShader.fs");
 #pragma endregion
 
 #pragma region Set-up vertex buffer and attributes
@@ -73,6 +73,8 @@ Shader ourShader("vShader.vs", "fShader.fs");
 
 #pragma region render loop
 	int value = glfwWindowShouldClose(window);
+	float triangleOffset = 1.0f;
+	bool shouldIncrease = false;
 	while (value == GLFW_FALSE) {
 		//input
 		process_input(window);
@@ -83,9 +85,19 @@ Shader ourShader("vShader.vs", "fShader.fs");
 
 		// draw our first triangle
 		int horizontalOffsetLocation = glGetUniformLocation(ourShader.ID, "horizontalOffset");
+		if (triangleOffset == 1.0f) {
+			triangleOffset -= 0.1f;
+			shouldIncrease = false;
+		}
+		else if (triangleOffset == -1.0f) {
+			triangleOffset += 0.1f;
+			shouldIncrease = true;
+		}
+		else {
+			shouldIncrease ? triangleOffset += 0.1f : triangleOffset -= 0.1f;
+		}
+		glUniform3f(horizontalOffsetLocation, sin(triangleOffset) / 50, 0.0f, 0.0f);
 		ourShader.use();
-		glUniform3f(horizontalOffsetLocation, -0.5f, 0.0f, 0.0f);
-		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		//check and call events swap buffers
