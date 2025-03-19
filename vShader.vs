@@ -5,11 +5,11 @@ layout (location = 1) in vec3 aColor;
 out vec3 ourColor;
 out vec3 vertexPosition;
 
-uniform vec3 horizontalOffset;
+uniform vec3 offset;
 
 void main()
 {
-    gl_Position = vec4(aPos.x - horizontalOffset.x, aPos.y, aPos.z, 1.0);
+    gl_Position = vec4(aPos.x - offset.x, aPos.y - offset.y, aPos.z, 1.0);
     ourColor = aColor;
-    vertexPosition = vec3(aPos.x - horizontalOffset.x, aPos.y, aPos.z);
+    vertexPosition = vec3(aPos.x - offset.x, aPos.y - offset.y, aPos.z);
 }

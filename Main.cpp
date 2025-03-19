@@ -86,10 +86,13 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw our first triangle
-		int horizontalOffsetLocation = glGetUniformLocation(ourShader.ID, "horizontalOffset");
-		float xOffset = sin(triangleOffset);
+		int offsetLocation = glGetUniformLocation(ourShader.ID, "offset");
+		float xOffset = cos(triangleOffset);
+		float yOffset = sin(triangleOffset);
 		std::cout << "triangleOffset value:\n" << triangleOffset << std::endl;
-		glUniform3f(horizontalOffsetLocation, xOffset, 0.0f, 0.0f);
+		std::cout << "xOffset value:\n" << xOffset << std::endl;
+		std::cout << "yOffset value:\n" << yOffset << std::endl;
+		glUniform3f(offsetLocation, xOffset, yOffset, zOffset);
 		ourShader.use();
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
