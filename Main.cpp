@@ -89,7 +89,7 @@ int main() {
 		int offsetLocation = glGetUniformLocation(ourShader.ID, "offset");
 		float xOffset = cos(triangleOffset);
 		float yOffset = sin(triangleOffset);
-		float zOffset = tan(triangleOffset);
+		float zOffset = cos(triangleOffset);
 		std::cout << "triangleOffset value:\n" << triangleOffset << std::endl;
 		std::cout << "xOffset value:\n" << xOffset << std::endl;
 		std::cout << "yOffset value:\n" << yOffset << std::endl;
