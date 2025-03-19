@@ -2,6 +2,8 @@
 #include <glfw3.h>
 #include <iostream>
 
+#include "Shader.h"
+
 //Callback function signatures
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
@@ -57,27 +59,7 @@ int main() {
 #pragma endregion
 
 #pragma region build and compile vertex and fragment shaders
-	//vertex shader
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	//fragment shader
-	unsigned int orangeFragmentShader;
-	orangeFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(orangeFragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(orangeFragmentShader);
-
-	//link shaders
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, orangeFragmentShader);
-	glLinkProgram(shaderProgram);
-
-	//delete shaders after done
-	glDeleteShader(vertexShader);
-	glDeleteShader(orangeFragmentShader);
+Shader ourShader("../Shaders/vShader.vs", "../Shaders/fShader.fs");
 #pragma endregion
 
 #pragma region Set-up vertex buffer and attributes
@@ -119,7 +101,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw our first triangle
-		glUseProgram(shaderProgram);
+		ourShader.use();
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -132,7 +114,7 @@ int main() {
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
+	ourShader.deleteProgram();
 
 	glfwTerminate();
 	return 0;

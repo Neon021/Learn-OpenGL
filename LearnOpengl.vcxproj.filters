@@ -31,10 +31,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fShader.fs">
+    <None Include="vShader.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="vShader.vs">
+    <None Include="fShader.fs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
