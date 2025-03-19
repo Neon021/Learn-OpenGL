@@ -9,7 +9,7 @@ uniform vec3 offset;
 
 void main()
 {
-    gl_Position = vec4(aPos.x - offset.x, aPos.y - offset.y, aPos.z, 1.0);
+    gl_Position = vec4(aPos.x - offset.x, aPos.y - offset.y, aPos.z - offset.z, 1.0);
     ourColor = aColor;
-    vertexPosition = vec3(aPos.x - offset.x, aPos.y - offset.y, aPos.z);
+    vertexPosition = vec3(aPos.x - offset.x, aPos.y - offset.y, aPos.z - offset.z);
 }

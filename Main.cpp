@@ -89,9 +89,11 @@ int main() {
 		int offsetLocation = glGetUniformLocation(ourShader.ID, "offset");
 		float xOffset = cos(triangleOffset);
 		float yOffset = sin(triangleOffset);
+		float zOffset = tan(triangleOffset);
 		std::cout << "triangleOffset value:\n" << triangleOffset << std::endl;
 		std::cout << "xOffset value:\n" << xOffset << std::endl;
 		std::cout << "yOffset value:\n" << yOffset << std::endl;
+		std::cout << "zOffset value:\n" << zOffset << std::endl;
 		glUniform3f(offsetLocation, xOffset, yOffset, zOffset);
 		ourShader.use();
 		glDrawArrays(GL_TRIANGLES, 0, 3);
