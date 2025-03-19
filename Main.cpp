@@ -73,41 +73,23 @@ int main() {
 
 #pragma region render loop
 	int value = glfwWindowShouldClose(window);
-	float triangleOffset = 0;
-	bool shouldIncrease = true;
-	float lastFrame = 0.0f;
-	float animationSpeed = 10.0f;
+	float triangleOffset = 0.0f;
+	float oscillationSpeed = 0.5f;
 
 	while (value == GLFW_FALSE) {
-		float currFrame = glfwGetTime();
-		float deltaTime = currFrame - lastFrame;
-		lastFrame = currFrame;
+		triangleOffset = glfwGetTime() * oscillationSpeed;
 
 		//input
 		process_input(window);
-
 		//color clear
 		glClearColor(0.5f, 0.3f, 0.7f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw our first triangle
 		int horizontalOffsetLocation = glGetUniformLocation(ourShader.ID, "horizontalOffset");
-		if (std::trunc(triangleOffset) == 1) {
-			triangleOffset -= animationSpeed * deltaTime;
-			shouldIncrease = false;
-		}
-		else if (std::trunc(triangleOffset) == -1) {
-			triangleOffset += animationSpeed * deltaTime;
-			shouldIncrease = true;
-		}
-		else {
-			shouldIncrease ? 
-				triangleOffset += animationSpeed * deltaTime :
-				triangleOffset -= animationSpeed * deltaTime;
-		}
-		std::cout << "triangleOffset value:\n" <<
-			triangleOffset << std::endl;
-		glUniform3f(horizontalOffsetLocation, sin(triangleOffset), 0.0f, 0.0f);
+		float xOffset = sin(triangleOffset);
+		std::cout << "triangleOffset value:\n" << triangleOffset << std::endl;
+		glUniform3f(horizontalOffsetLocation, xOffset, 0.0f, 0.0f);
 		ourShader.use();
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
