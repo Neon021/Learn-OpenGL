@@ -73,8 +73,8 @@ int main() {
 
 #pragma region render loop
 	int value = glfwWindowShouldClose(window);
-	float triangleOffset = 1.0f;
-	bool shouldIncrease = false;
+	float triangleOffset = 0;
+	bool shouldIncrease = true;
 	while (value == GLFW_FALSE) {
 		//input
 		process_input(window);
@@ -85,18 +85,20 @@ int main() {
 
 		// draw our first triangle
 		int horizontalOffsetLocation = glGetUniformLocation(ourShader.ID, "horizontalOffset");
-		if (triangleOffset == 1.0f) {
+		if (std::trunc(triangleOffset) == 1) {
 			triangleOffset -= 0.1f;
 			shouldIncrease = false;
 		}
-		else if (triangleOffset == -1.0f) {
+		else if (std::trunc(triangleOffset) == -1) {
 			triangleOffset += 0.1f;
 			shouldIncrease = true;
 		}
 		else {
 			shouldIncrease ? triangleOffset += 0.1f : triangleOffset -= 0.1f;
 		}
-		glUniform3f(horizontalOffsetLocation, sin(triangleOffset) / 50, 0.0f, 0.0f);
+		std::cout << "triangleOffset value:\n" <<
+			triangleOffset << std::endl;
+		glUniform3f(horizontalOffsetLocation, sin(triangleOffset), 0.0f, 0.0f);
 		ourShader.use();
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
