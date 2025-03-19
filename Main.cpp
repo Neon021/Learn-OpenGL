@@ -75,7 +75,14 @@ int main() {
 	int value = glfwWindowShouldClose(window);
 	float triangleOffset = 0;
 	bool shouldIncrease = true;
+	float lastFrame = 0.0f;
+	float animationSpeed = 10.0f;
+
 	while (value == GLFW_FALSE) {
+		float currFrame = glfwGetTime();
+		float deltaTime = currFrame - lastFrame;
+		lastFrame = currFrame;
+
 		//input
 		process_input(window);
 
@@ -86,15 +93,17 @@ int main() {
 		// draw our first triangle
 		int horizontalOffsetLocation = glGetUniformLocation(ourShader.ID, "horizontalOffset");
 		if (std::trunc(triangleOffset) == 1) {
-			triangleOffset -= 0.1f;
+			triangleOffset -= animationSpeed * deltaTime;
 			shouldIncrease = false;
 		}
 		else if (std::trunc(triangleOffset) == -1) {
-			triangleOffset += 0.1f;
+			triangleOffset += animationSpeed * deltaTime;
 			shouldIncrease = true;
 		}
 		else {
-			shouldIncrease ? triangleOffset += 0.1f : triangleOffset -= 0.1f;
+			shouldIncrease ? 
+				triangleOffset += animationSpeed * deltaTime :
+				triangleOffset -= animationSpeed * deltaTime;
 		}
 		std::cout << "triangleOffset value:\n" <<
 			triangleOffset << std::endl;
